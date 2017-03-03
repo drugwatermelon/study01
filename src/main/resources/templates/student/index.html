@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Index</title>
+<script  src="/script/jquery-3.1.1.min.js"></script>
+<link href="/css/index.css"  rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+    $(function () {
+        function checkSelected() {
+            var i = 0;
+            var _id = 0;
+            $('input[type="checkbox"]').each(function(){
+                if($(this).prop('checked')) {
+                    i++;
+                    _id = $(this).prop('value');
+                }
+            });
+            if(i == 0) {
+                alert("你需要勾选你要修改|删除的项。");
+                return 0;
+            }
+            if(i > 1) {
+                alert("你只能勾选一个你要修改|删除的项。");
+                return 0;
+            }
+            return _id;
+        }
+        $('#btnmodify').bind('click',function () {
+            var id = checkSelected();
+            if(id==0){
+                return;
+            }
+            window.location.href="/modify/"+id;
+        });
+        $('#btnDelete').bind('click',function () {
+            var id = checkSelected();
+            if(id==0){
+                return;
+            }
+            if(window.confirm('你确定要删除吗？')){
+                window.location.href="/delete/"+id;
+                return true;
+            }else{
+                return false;
+            }
+        });
+        $('#aStudent').bind('click', function(){
+            var id = checkSelected();
+            if(id == 0) {
+                alert("请选择你要查看的选项！");
+                return;
+            }
+            $.ajax({
+                type: 'Get',
+                url: '/ajaxstudent/'+id,
+                success: function (data) {
+                    alert("id="+data.id+",name="+data.name+",age="+data.age);
+
+                },
+                error: function(data,status,er) {
+                    alert("error: "+data+" status: "+status+" er:"+er);
+                }
+            });
+        });
+        $('#students').bind('click', function(){
+            $.ajax({
+                type: 'Get',
+                url: '/ajaxstudents',
+                success: function (data) {
+                    $.each(data,function (index,value) {
+                        alert(value.id + " " + value.name + " " + value.age);
+                    })
+                },
+                error: function(data,status,er) {
+                    alert("error: "+data+" status: "+status+" er:"+er);
+                }
+            });
+        });
+    });
+</script>
+</head>
+<body>
+    <div class="container">
+        <div  class="left">
+            <table>
+                <thead>
+                    <tr>
+                        <td></td><td>ID</td><td>Name</td><td>Age</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="student,students: ${students}">
+                        <td><input type="checkbox" th:value="${student.id}"/></td>
+                        <td th:text="${student.id}"></td>
+                        <td th:text="${student.name}"></td>
+                        <td th:text="${student.age}"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr/>
+            <a th:href="|/forwardAdd|" th:text="new"></a>
+            <a href="#" id ="btnmodify" th:text="modify"></a>
+            <a href="#" id = "btnDelete" th:text="delete"></a>
+            <br/>
+            <a th:href="|1|">首页</a>
+            <a th:href="|${totalPage}|">尾页</a>
+
+            <a th:href="|${currentPage+1}|">下一页</a>
+            <a th:href="|${currentPage-1}|">上一页</a>
+        </div>
+        <div class="right">
+            <img src="/img" style="width:100px;height: 80px;"/>
+            <a href="#" id="aStudent">Ajax a student</a>
+            <a href="#" id="students">Ajax students</a>
+        </div>
+    </div>
+</body>
+
+</html>

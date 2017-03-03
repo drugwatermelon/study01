@@ -1,0 +1,36 @@
+@CHARSET "UTF-8";
+
+
+*{
+	
+}
+
+body {
+	background-color: bisque;
+
+}
+
+.container {
+	height: 300px;
+	display: flex;
+	flex-flow: row;
+	
+}
+
+.left {
+	width: 50%;
+	height: 300px;
+}
+
+
+.right {
+	height: 300px;
+}
+
+a {
+	color:brown;
+}
+
+
+
+
